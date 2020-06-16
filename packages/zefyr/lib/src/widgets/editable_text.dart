@@ -4,6 +4,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:notus/notus.dart';
 
@@ -89,8 +90,7 @@ class ZefyrEditableText extends StatefulWidget {
   _ZefyrEditableTextState createState() => _ZefyrEditableTextState();
 }
 
-class _ZefyrEditableTextState extends State<ZefyrEditableText>
-    with AutomaticKeepAliveClientMixin {
+class _ZefyrEditableTextState extends State<ZefyrEditableText> with AutomaticKeepAliveClientMixin {
   //
   // New public members
   //
@@ -113,8 +113,7 @@ class _ZefyrEditableTextState extends State<ZefyrEditableText>
   /// keyboard become visible.
   void requestKeyboard() {
     if (_focusNode.hasFocus) {
-      _input.openConnection(
-          widget.controller.plainTextEditingValue, widget.keyboardAppearance);
+      _input.openConnection(widget.controller.plainTextEditingValue, widget.keyboardAppearance);
     } else {
       FocusScope.of(context).requestFocus(_focusNode);
     }
@@ -294,8 +293,7 @@ class _ZefyrEditableTextState extends State<ZefyrEditableText>
 
   // Triggered for both text and selection changes.
   void _handleLocalValueChange() {
-    if (widget.mode.canEdit &&
-        widget.controller.lastChangeSource == ChangeSource.local) {
+    if (widget.mode.canEdit && widget.controller.lastChangeSource == ChangeSource.local) {
       // Only request keyboard for user actions.
       requestKeyboard();
     }
@@ -306,17 +304,32 @@ class _ZefyrEditableTextState extends State<ZefyrEditableText>
     });
   }
 
+  /// Whether the editable is currently focused.
+  bool _hasFocus = false;
+  bool _listenerAttached = false;
   void _handleFocusChange() {
-    _input.openOrCloseConnection(_focusNode,
-        widget.controller.plainTextEditingValue, widget.keyboardAppearance);
+    _input.openOrCloseConnection(_focusNode, widget.controller.plainTextEditingValue, widget.keyboardAppearance);
     _cursorTimer.startOrStop(_focusNode, selection);
     updateKeepAlive();
+    if (_hasFocus == _focusNode.hasFocus) return;
+    _hasFocus = _focusNode.hasFocus;
+    if (_hasFocus) {
+      assert(!_listenerAttached);
+      RawKeyboard.instance.addListener(_handleKeyEvent);
+      _listenerAttached = true;
+    } else {
+      assert(_listenerAttached);
+      RawKeyboard.instance.removeListener(_handleKeyEvent);
+      _listenerAttached = false;
+    }
   }
 
-  void _handleRemoteValueChange(
-      int start, String deleted, String inserted, TextSelection selection) {
-    widget.controller
-        .replaceText(start, deleted.length, inserted, selection: selection);
+  void _handleKeyEvent(RawKeyEvent keyEvent) {
+    print("!!! ZEFYR !!!");
+  }
+
+  void _handleRemoteValueChange(int start, String deleted, String inserted, TextSelection selection) {
+    widget.controller.replaceText(start, deleted.length, inserted, selection: selection);
   }
 
   void _handleRenderContextChange() {
