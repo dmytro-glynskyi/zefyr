@@ -7,6 +7,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:notus/notus.dart';
+import 'package:zefyr/src/widgets/checked_list.dart';
 
 import 'code.dart';
 import 'common.dart';
@@ -257,6 +258,8 @@ class _ZefyrEditableTextState extends State<ZefyrEditableText> with AutomaticKee
       return ZefyrList(node: block);
     } else if (blockStyle == NotusAttribute.block.numberList) {
       return ZefyrList(node: block);
+    } else if (blockStyle == NotusAttribute.block.checkedList) {
+      return ZefyrCheckedList(node: block);
     } else if (blockStyle == NotusAttribute.block.quote) {
       return ZefyrQuote(node: block);
     }

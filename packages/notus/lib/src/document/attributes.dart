@@ -380,6 +380,10 @@ class BlockAttributeBuilder extends NotusAttributeBuilder<String> {
   NotusAttribute<String> get numberList =>
       NotusAttribute<String>._(key, scope, 'ol');
 
+  /// Formats a block of lines as a bullet list.
+  NotusAttribute<String> get checkedList =>
+      NotusAttribute<String>._(key, scope, 'el');
+
   /// Formats a block of lines as a code snippet, using monospace font.
   NotusAttribute<String> get code =>
       NotusAttribute<String>._(key, scope, 'code');
