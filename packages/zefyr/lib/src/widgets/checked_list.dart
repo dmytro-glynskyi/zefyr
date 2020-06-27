@@ -55,11 +55,9 @@ class ZefyrCheckedListItem extends StatelessWidget {
     final BlockNode block = node.parent;
     final style = block.style.get(NotusAttribute.block);
     final theme = ZefyrTheme.of(context);
-    final blockTheme = (style == NotusAttribute.block.bulletList)
-        ? theme.attributeTheme.bulletList
-        : theme.attributeTheme.numberList;
-    final bulletText =
-        (style == NotusAttribute.block.bulletList) ? '•' : '$index.';
+    final blockTheme = theme.attributeTheme.bulletList;
+    final isChecked = node.style.contains(NotusAttribute.checked);
+    final bulletText = isChecked ? '☒' : '☐';
 
     TextStyle textStyle;
     Widget content;
@@ -78,6 +76,9 @@ class ZefyrCheckedListItem extends StatelessWidget {
         padding: blockTheme.linePadding,
       );
       padding = blockTheme.linePadding;
+    }
+    if (isChecked) {
+      textStyle = textStyle.copyWith(decoration: TextDecoration.lineThrough);
     }
 
     Widget bullet =

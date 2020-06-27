@@ -258,7 +258,7 @@ class _ZefyrEditableTextState extends State<ZefyrEditableText> with AutomaticKee
       return ZefyrList(node: block);
     } else if (blockStyle == NotusAttribute.block.numberList) {
       return ZefyrList(node: block);
-    } else if (blockStyle == NotusAttribute.block.checkedList) {
+    } else if (blockStyle == NotusAttribute.block.checkList) {
       return ZefyrCheckedList(node: block);
     } else if (blockStyle == NotusAttribute.block.quote) {
       return ZefyrQuote(node: block);
