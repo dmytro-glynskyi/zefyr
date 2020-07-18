@@ -32,6 +32,8 @@ abstract class NotusAttributeKey<T> {
 /// instance, link attribute.
 ///
 /// See also:
+///   * [ColorAttributeBuilder]
+///   * [BackgroundColorAttributeBuilder]
 ///   * [LinkAttributeBuilder]
 ///   * [BlockAttributeBuilder]
 ///   * [HeadingAttributeBuilder]
@@ -68,6 +70,8 @@ abstract class NotusAttributeBuilder<T> implements NotusAttributeKey<T> {
 ///   * [NotusAttribute.bold]
 ///   * [NotusAttribute.italic]
 ///   * [NotusAttribute.link]
+///   * [NotusAttribute.color]
+///   * [NotusAttribute.backgroundColor]
 ///   * [NotusAttribute.heading]
 ///   * [NotusAttribute.block]
 class NotusAttribute<T> implements NotusAttributeBuilder<T> {
@@ -75,6 +79,8 @@ class NotusAttribute<T> implements NotusAttributeBuilder<T> {
     NotusAttribute.bold.key: NotusAttribute.bold,
     NotusAttribute.italic.key: NotusAttribute.italic,
     NotusAttribute.link.key: NotusAttribute.link,
+    NotusAttribute.color.key: NotusAttribute.color,
+    NotusAttribute.backgroundColor.key: NotusAttribute.backgroundColor,
     NotusAttribute.heading.key: NotusAttribute.heading,
     NotusAttribute.checked.key: NotusAttribute.checked,
     NotusAttribute.block.key: NotusAttribute.block,
@@ -92,6 +98,12 @@ class NotusAttribute<T> implements NotusAttributeBuilder<T> {
   /// Link style attribute.
   // ignore: const_eval_throws_exception
   static const link = LinkAttributeBuilder._();
+
+  /// Color style attribute.
+  static const color = ColorAttributeBuilder._();
+
+  /// Background color style attribute.
+  static const backgroundColor = BackgroundColorAttributeBuilder._();
 
   // Line attributes
 
@@ -351,6 +363,32 @@ class LinkAttributeBuilder extends NotusAttributeBuilder<String> {
   /// Creates a link attribute with specified link [value].
   NotusAttribute<String> fromString(String value) =>
       NotusAttribute<String>._(key, scope, value);
+}
+
+/// Builder for color attribute values.
+///
+/// There is no need to use this class directly, consider using
+/// [NotusAttribute.color] instead.
+class ColorAttributeBuilder extends NotusAttributeBuilder<int> {
+  static const _kColor = 'color';
+  const ColorAttributeBuilder._() : super._(_kColor, NotusAttributeScope.inline);
+
+  /// Creates a color attribute with specified color [value].
+  NotusAttribute<int> fromInt(int value) =>
+      NotusAttribute<int>._(key, scope, value);
+}
+
+/// Builder for background color attribute values.
+///
+/// There is no need to use this class directly, consider using
+/// [NotusAttribute.backgroundColor] instead.
+class BackgroundColorAttributeBuilder extends NotusAttributeBuilder<int> {
+  static const _kBackgroundColor = 'background-color';
+  const BackgroundColorAttributeBuilder._() : super._(_kBackgroundColor, NotusAttributeScope.inline);
+
+  /// Creates a background color attribute with specified color [value].
+  NotusAttribute<int> fromInt(int value) =>
+      NotusAttribute<int>._(key, scope, value);
 }
 
 /// Builder for heading attribute styles.
