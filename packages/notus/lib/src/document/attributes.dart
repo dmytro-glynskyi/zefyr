@@ -70,6 +70,7 @@ abstract class NotusAttributeBuilder<T> implements NotusAttributeKey<T> {
 ///   * [NotusAttribute.bold]
 ///   * [NotusAttribute.italic]
 ///   * [NotusAttribute.link]
+///   * [NotusAttribute.fontSize]
 ///   * [NotusAttribute.color]
 ///   * [NotusAttribute.backgroundColor]
 ///   * [NotusAttribute.heading]
@@ -79,6 +80,7 @@ class NotusAttribute<T> implements NotusAttributeBuilder<T> {
     NotusAttribute.bold.key: NotusAttribute.bold,
     NotusAttribute.italic.key: NotusAttribute.italic,
     NotusAttribute.link.key: NotusAttribute.link,
+    NotusAttribute.fontSize.key: NotusAttribute.fontSize,
     NotusAttribute.color.key: NotusAttribute.color,
     NotusAttribute.backgroundColor.key: NotusAttribute.backgroundColor,
     NotusAttribute.heading.key: NotusAttribute.heading,
@@ -98,6 +100,9 @@ class NotusAttribute<T> implements NotusAttributeBuilder<T> {
   /// Link style attribute.
   // ignore: const_eval_throws_exception
   static const link = LinkAttributeBuilder._();
+
+  /// Font size attribute.
+  static const fontSize = FontSizeAttributeBuilder._();
 
   /// Color style attribute.
   static const color = ColorAttributeBuilder._();
@@ -363,6 +368,20 @@ class LinkAttributeBuilder extends NotusAttributeBuilder<String> {
   /// Creates a link attribute with specified link [value].
   NotusAttribute<String> fromString(String value) =>
       NotusAttribute<String>._(key, scope, value);
+}
+
+
+/// Builder for font size attribute values.
+///
+/// There is no need to use this class directly, consider using
+/// [NotusAttribute.fontSize] instead.
+class FontSizeAttributeBuilder extends NotusAttributeBuilder<int> {
+  static const _kFontSize = 'font-size';
+  const FontSizeAttributeBuilder._() : super._(_kFontSize, NotusAttributeScope.inline);
+
+  /// Creates a font size attribute with specified color [value].
+  NotusAttribute<int> fromInt(int value) =>
+      NotusAttribute<int>._(key, scope, value);
 }
 
 /// Builder for color attribute values.
