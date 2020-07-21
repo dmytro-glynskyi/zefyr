@@ -287,6 +287,9 @@ class AttributeTheme {
   /// Style used to render "italic" text.
   final TextStyle italic;
 
+  /// Style used to render "underline" text.
+  final TextStyle underline;
+
   /// Style used to render text containing links.
   final TextStyle link;
 
@@ -315,6 +318,7 @@ class AttributeTheme {
   AttributeTheme({
     this.bold,
     this.italic,
+    this.underline,
     this.link,
     this.heading1,
     this.heading2,
@@ -347,6 +351,7 @@ class AttributeTheme {
     return AttributeTheme(
       bold: TextStyle(fontWeight: FontWeight.bold),
       italic: TextStyle(fontStyle: FontStyle.italic),
+      underline: TextStyle(decoration: TextDecoration.underline),
       link: TextStyle(
         decoration: TextDecoration.underline,
         color: theme.accentColor,
