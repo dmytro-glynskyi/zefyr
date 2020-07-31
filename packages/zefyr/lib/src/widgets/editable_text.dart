@@ -38,6 +38,7 @@ class ZefyrEditableText extends StatefulWidget {
     @required this.controller,
     @required this.focusNode,
     @required this.imageDelegate,
+    this.scrollController,
     this.selectionControls,
     this.autofocus = true,
     this.mode = ZefyrMode.edit,
@@ -79,6 +80,9 @@ class ZefyrEditableText extends StatefulWidget {
 
   /// Padding around editable area.
   final EdgeInsets padding;
+
+  /// Controls scroll of text field.
+  final ScrollController scrollController;
 
   /// The appearance of the keyboard.
   ///
@@ -176,6 +180,7 @@ class _ZefyrEditableTextState extends State<ZefyrEditableText> with AutomaticKee
     super.initState();
     _focusAttachment = _focusNode.attach(context);
     _input = InputConnectionController(_handleRemoteValueChange);
+    _scrollController = widget.scrollController;
     _updateSubscriptions();
   }
 
@@ -226,7 +231,7 @@ class _ZefyrEditableTextState extends State<ZefyrEditableText> with AutomaticKee
   // Private members
   //
 
-  final ScrollController _scrollController = ScrollController();
+  ScrollController _scrollController;
   ZefyrRenderContext _renderContext;
   CursorTimer _cursorTimer;
   InputConnectionController _input;

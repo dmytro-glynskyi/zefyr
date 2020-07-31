@@ -27,6 +27,7 @@ class ZefyrEditor extends StatefulWidget {
     this.imageDelegate,
     this.selectionControls,
     this.physics,
+    this.scrollController,
     this.keyboardAppearance,
   })  : assert(mode != null),
         assert(controller != null),
@@ -66,6 +67,9 @@ class ZefyrEditor extends StatefulWidget {
 
   /// Controls physics of scrollable editor.
   final ScrollPhysics physics;
+
+  /// Controls scroll of editor.
+  final ScrollController scrollController;
 
   /// Padding around editable area.
   final EdgeInsets padding;
@@ -199,6 +203,7 @@ class _ZefyrEditorState extends State<ZefyrEditor> {
       mode: widget.mode,
       padding: widget.padding,
       physics: widget.physics,
+      scrollController: widget.scrollController,
       keyboardAppearance: keyboardAppearance,
     );
 
