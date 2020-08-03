@@ -22,9 +22,9 @@ class ZefyrScaffoldState extends State<ZefyrScaffold> {
   WidgetBuilder _toolbarBuilder;
 
   void showToolbar(WidgetBuilder builder) {
-    setState(() {
-      _toolbarBuilder = builder;
-    });
+//    setState(() {
+//      _toolbarBuilder = builder;
+//    });
   }
 
   void hideToolbar(WidgetBuilder builder) {
