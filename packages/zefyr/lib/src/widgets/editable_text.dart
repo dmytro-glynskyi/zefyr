@@ -158,9 +158,13 @@ class _ZefyrEditableTextState extends State<ZefyrEditableText> with AutomaticKee
     }
 
     body = SingleChildScrollView(
+
       physics: widget.physics,
       controller: _scrollController,
-      child: body,
+      child: Stack(children: [
+        SizedBox(height: 2000),
+        body
+      ]),
     );
 
     final layers = <Widget>[body];
