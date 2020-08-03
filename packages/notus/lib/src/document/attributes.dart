@@ -71,6 +71,7 @@ abstract class NotusAttributeBuilder<T> implements NotusAttributeKey<T> {
 ///   * [NotusAttribute.italic]
 ///   * [NotusAttribute.link]
 ///   * [NotusAttribute.fontSize]
+///   * [NotusAttribute.fontFamily]
 ///   * [NotusAttribute.color]
 ///   * [NotusAttribute.backgroundColor]
 ///   * [NotusAttribute.heading]
@@ -81,6 +82,7 @@ class NotusAttribute<T> implements NotusAttributeBuilder<T> {
     NotusAttribute.italic.key: NotusAttribute.italic,
     NotusAttribute.link.key: NotusAttribute.link,
     NotusAttribute.fontSize.key: NotusAttribute.fontSize,
+    NotusAttribute.fontFamily.key: NotusAttribute.fontFamily,
     NotusAttribute.color.key: NotusAttribute.color,
     NotusAttribute.backgroundColor.key: NotusAttribute.backgroundColor,
     NotusAttribute.heading.key: NotusAttribute.heading,
@@ -103,6 +105,9 @@ class NotusAttribute<T> implements NotusAttributeBuilder<T> {
 
   /// Font size attribute.
   static const fontSize = FontSizeAttributeBuilder._();
+
+  /// Font family attribute.
+  static const fontFamily = FontFamilyAttributeBuilder._();
 
   /// Color style attribute.
   static const color = ColorAttributeBuilder._();
@@ -370,7 +375,6 @@ class LinkAttributeBuilder extends NotusAttributeBuilder<String> {
       NotusAttribute<String>._(key, scope, value);
 }
 
-
 /// Builder for font size attribute values.
 ///
 /// There is no need to use this class directly, consider using
@@ -382,6 +386,19 @@ class FontSizeAttributeBuilder extends NotusAttributeBuilder<int> {
   /// Creates a font size attribute with specified color [value].
   NotusAttribute<int> fromInt(int value) =>
       NotusAttribute<int>._(key, scope, value);
+}
+
+/// Builder for font family attribute values.
+///
+/// There is no need to use this class directly, consider using
+/// [NotusAttribute.fontFamily] instead.
+class FontFamilyAttributeBuilder extends NotusAttributeBuilder<String> {
+  static const _kFontFamily = 'font-family';
+  const FontFamilyAttributeBuilder._() : super._(_kFontFamily, NotusAttributeScope.inline);
+
+  /// Creates a font size attribute with specified color [value].
+  NotusAttribute<String> fromString(String value) =>
+      NotusAttribute<String>._(key, scope, value);
 }
 
 /// Builder for color attribute values.

@@ -151,6 +151,9 @@ class _ZefyrLineState extends State<ZefyrLine> {
     if (style.contains(NotusAttribute.fontSize)) {
       result = result.merge(TextStyle(fontSize: style.get(NotusAttribute.fontSize).value.toDouble()));
     }
+    if (style.contains(NotusAttribute.fontFamily)) {
+      result = result.merge(TextStyle(fontFamily: style.get(NotusAttribute.fontFamily).value));
+    }
     if (style.contains(NotusAttribute.color)) {
       result = result.merge(TextStyle(color: Color(style.get(NotusAttribute.color).value)));
     }
