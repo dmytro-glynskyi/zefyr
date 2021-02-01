@@ -35,7 +35,7 @@ class TextLine extends StatelessWidget {
       return EmbedProxy(child: embedBuilder(context, embed));
     }
     final text = buildText(context, node);
-    final strutStyle = StrutStyle.fromTextStyle(text.style, forceStrutHeight: true);
+    final strutStyle = StrutStyle.fromTextStyle(text.style);
     return RichTextProxy(
       textStyle: text.style,
       textDirection: textDirection,
@@ -52,7 +52,9 @@ class TextLine extends StatelessWidget {
 
   TextSpan buildText(BuildContext context, LineNode node) {
     final theme = ZefyrTheme.of(context);
-    final children = node.children.map((node) => _segmentToTextSpan(node, theme)).toList(growable: false);
+    final children = node.children
+        .map((node) => _segmentToTextSpan(node, theme))
+        .toList(growable: false);
     return TextSpan(
       style: _getParagraphTextStyle(node.style, theme),
       children: children,
@@ -106,11 +108,22 @@ class TextLine extends StatelessWidget {
     if (style.contains(NotusAttribute.link)) {
       result = _mergeTextStyleWithDecoration(result, theme.link);
     }
+    if (style.contains(NotusAttribute.fontSize)) {
+      result = result.merge(TextStyle(
+          fontSize: style.get(NotusAttribute.fontSize).value.toDouble()));
+    }
+    if (style.contains(NotusAttribute.fontFamily)) {
+      result = result.merge(
+          TextStyle(fontFamily: style.get(NotusAttribute.fontFamily).value));
+    }
     if (style.contains(NotusAttribute.color)) {
-      result = result.merge(TextStyle(color: Color(style.get(NotusAttribute.color).value)));
+      result = result.merge(
+          TextStyle(color: Color(style.get(NotusAttribute.color).value)));
     }
     if (style.contains(NotusAttribute.backgroundColor)) {
-      result = result.merge(TextStyle(backgroundColor: Color(style.get(NotusAttribute.backgroundColor).value)));
+      result = result.merge(TextStyle(
+          backgroundColor:
+              Color(style.get(NotusAttribute.backgroundColor).value)));
     }
     if (style.contains(NotusAttribute.underline)) {
       result = _mergeTextStyleWithDecoration(result, theme.underline);
