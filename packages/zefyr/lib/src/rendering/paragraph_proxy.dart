@@ -10,6 +10,7 @@ class RenderParagraphProxy extends RenderProxyBox
   RenderParagraphProxy({
     RenderParagraph child,
     @required TextStyle textStyle,
+    @required TextAlign textAlign,
     @required TextDirection textDirection,
     @required double textScaleFactor,
     @required StrutStyle strutStyle,
@@ -18,7 +19,7 @@ class RenderParagraphProxy extends RenderProxyBox
     @required TextHeightBehavior textHeightBehavior,
   })  : _prototypePainter = TextPainter(
             text: TextSpan(text: ' ', style: textStyle),
-            textAlign: TextAlign.left,
+            textAlign: textAlign,
             textDirection: textDirection,
             textScaleFactor: textScaleFactor,
             strutStyle: strutStyle,
@@ -33,6 +34,13 @@ class RenderParagraphProxy extends RenderProxyBox
     assert(value != null);
     if (_prototypePainter.text.style == value) return;
     _prototypePainter.text = TextSpan(text: ' ', style: value);
+    markNeedsLayout();
+  }
+
+  set textAlign(TextAlign value) {
+    assert(value != null);
+    if (_prototypePainter.textAlign == value) return;
+    _prototypePainter.textAlign = value;
     markNeedsLayout();
   }
 

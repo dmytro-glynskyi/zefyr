@@ -77,6 +77,7 @@ abstract class NotusAttributeBuilder<T> implements NotusAttributeKey<T> {
 ///   * [NotusAttribute.color]
 ///   * [NotusAttribute.backgroundColor]
 ///   * [NotusAttribute.heading]
+///   * [NotusAttribute.alignment]
 ///   * [NotusAttribute.block]
 class NotusAttribute<T> implements NotusAttributeBuilder<T> {
   static final Map<String, NotusAttributeBuilder> _registry = {
@@ -90,6 +91,7 @@ class NotusAttribute<T> implements NotusAttributeBuilder<T> {
     NotusAttribute.color.key: NotusAttribute.color,
     NotusAttribute.backgroundColor.key: NotusAttribute.backgroundColor,
     NotusAttribute.heading.key: NotusAttribute.heading,
+    NotusAttribute.alignment.key: NotusAttribute.alignment,
     NotusAttribute.block.key: NotusAttribute.block,
   };
 
@@ -137,6 +139,19 @@ class NotusAttribute<T> implements NotusAttributeBuilder<T> {
 
   /// Alias for [NotusAttribute.heading.level3].
   static NotusAttribute<int> get h3 => heading.level3;
+
+  /// Alignment style attribute.
+  // ignore: const_eval_throws_exception
+  static const alignment = AlignmentAttributeBuilder._();
+
+  /// Alias for [NotusAttribute.alignment.end].
+  static NotusAttribute<String> get end => alignment.end;
+
+  /// Alias for [NotusAttribute.alignment.center].
+  static NotusAttribute<String> get center => alignment.center;
+
+  /// Alias for [NotusAttribute.alignment.justify].
+  static NotusAttribute<String> get justify => alignment.justify;
 
   /// Block attribute
   // ignore: const_eval_throws_exception
@@ -456,6 +471,27 @@ class HeadingAttributeBuilder extends NotusAttributeBuilder<int> {
 
   /// Level 3 heading, equivalent of `H3` in HTML.
   NotusAttribute<int> get level3 => NotusAttribute<int>._(key, scope, 3);
+}
+
+/// Builder for paragraph alignment attribute styles.
+///
+/// There is no need to use this class directly, consider using
+/// [NotusAttribute.alignment] instead.
+class AlignmentAttributeBuilder extends NotusAttributeBuilder<String> {
+  static const _kAlignment = 'alignment';
+  const AlignmentAttributeBuilder._()
+      : super._(_kAlignment, NotusAttributeScope.line);
+
+  /// Formats a block of lines to end
+  NotusAttribute<String> get end => NotusAttribute<String>._(key, scope, 'end');
+
+  /// Formats a block of lines to center
+  NotusAttribute<String> get center =>
+      NotusAttribute<String>._(key, scope, 'center');
+
+  /// Formats a block of lines to justify
+  NotusAttribute<String> get justify =>
+      NotusAttribute<String>._(key, scope, 'justify');
 }
 
 /// Builder for block attribute styles (number/bullet lists, code and quote).

@@ -16,14 +16,17 @@ class TextLine extends StatelessWidget {
   final LineNode node;
   final TextDirection textDirection;
   final ZefyrEmbedBuilder embedBuilder;
+  final TextAlign textAlign;
 
   const TextLine({
     Key key,
     @required this.node,
     this.textDirection,
     @required this.embedBuilder,
+    @required this.textAlign,
   })  : assert(node != null),
         assert(embedBuilder != null),
+        assert(textAlign != null),
         super(key: key);
 
   @override
@@ -36,13 +39,16 @@ class TextLine extends StatelessWidget {
     }
     final text = buildText(context, node);
     final strutStyle = StrutStyle.fromTextStyle(text.style);
+    final textAlign = _getParagraphTextAlign(node.style);
     return RichTextProxy(
       textStyle: text.style,
+      textAlign: textAlign,
       textDirection: textDirection,
       strutStyle: strutStyle,
       locale: Localizations.localeOf(context),
       child: RichText(
         text: buildText(context, node),
+        textAlign: textAlign,
         textDirection: textDirection,
         strutStyle: strutStyle,
         textScaleFactor: MediaQuery.textScaleFactorOf(context),
@@ -95,6 +101,19 @@ class TextLine extends StatelessWidget {
     }
 
     return textStyle;
+  }
+
+  TextAlign _getParagraphTextAlign(NotusStyle style) {
+    final alignment = style.get(NotusAttribute.alignment);
+    if (alignment == NotusAttribute.alignment.end) {
+      return TextAlign.end;
+    } else if (alignment == NotusAttribute.alignment.justify) {
+      return TextAlign.justify;
+    } else if (alignment == NotusAttribute.alignment.center) {
+      return TextAlign.center;
+    } else {
+      return TextAlign.start;
+    }
   }
 
   TextStyle _getInlineTextStyle(NotusStyle style, ZefyrThemeData theme) {

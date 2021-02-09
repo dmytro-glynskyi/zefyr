@@ -1123,6 +1123,7 @@ class RawEditorState extends EditorState
             node: node,
             textDirection: _textDirection,
             embedBuilder: widget.embedBuilder,
+            textAlign: _buildParagraphAlignment(node),
           ),
           hasFocus: _hasFocus,
           devicePixelRatio: MediaQuery.of(context).devicePixelRatio,
@@ -1148,6 +1149,19 @@ class RawEditorState extends EditorState
       }
     }
     return result;
+  }
+
+  TextAlign _buildParagraphAlignment(LineNode node) {
+    final alignment = node.style.get(NotusAttribute.alignment);
+    if (alignment == NotusAttribute.alignment.end) {
+      return TextAlign.end;
+    } else if (alignment == NotusAttribute.alignment.justify) {
+      return TextAlign.justify;
+    } else if (alignment == NotusAttribute.alignment.center) {
+      return TextAlign.center;
+    } else {
+      return TextAlign.start;
+    }
   }
 
   VerticalSpacing _getSpacingForLine(LineNode node, ZefyrThemeData theme) {

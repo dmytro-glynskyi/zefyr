@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:notus/notus.dart';
+import 'package:zefyr/zefyr.dart';
 
 import '../rendering/editable_text_block.dart';
 import 'cursor.dart';
@@ -69,6 +70,7 @@ class EditableTextBlock extends StatelessWidget {
           node: line,
           textDirection: textDirection,
           embedBuilder: embedBuilder,
+          textAlign: _buildParagraphAlignment(line),
         ),
         cursorController: cursorController,
         selection: selection,
@@ -78,6 +80,19 @@ class EditableTextBlock extends StatelessWidget {
       ));
     }
     return children.toList(growable: false);
+  }
+
+  TextAlign _buildParagraphAlignment(LineNode node) {
+    final alignment = node.style.get(NotusAttribute.alignment);
+    if (alignment == NotusAttribute.alignment.end) {
+      return TextAlign.end;
+    } else if (alignment == NotusAttribute.alignment.justify) {
+      return TextAlign.justify;
+    } else if (alignment == NotusAttribute.alignment.center) {
+      return TextAlign.center;
+    } else {
+      return TextAlign.start;
+    }
   }
 
   Widget _buildLeading(

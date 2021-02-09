@@ -631,7 +631,20 @@ class RenderEditableTextLine extends RenderEditableBox {
     if (leading != null) {
       final parentData = leading.parentData as BoxParentData;
       final effectiveOffset = offset + parentData.offset;
-      context.paintChild(leading, effectiveOffset);
+
+      final textPosition = TextPosition(
+        offset: 0,
+        affinity: selection.base.affinity,
+      );
+      final leadingRect =
+          Rect.fromLTWH(0, 0, leading.size.width, leading.size.height);
+      final caretOffset = body.getOffsetForCaret(
+            textPosition,
+            leadingRect,
+          ) +
+          effectiveOffset;
+
+      context.paintChild(leading, caretOffset);
     }
 
     if (body != null) {
