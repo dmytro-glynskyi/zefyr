@@ -64,7 +64,7 @@ class EditableTextBlock extends StatelessWidget {
         textDirection: textDirection,
         spacing: _getSpacingForLine(line, index, count, theme),
         leading: _buildLeading(context, line, index, count),
-        indentWidth: _getIndentWidth(),
+        indentWidth: _getIndentWidth(line),
         devicePixelRatio: MediaQuery.of(context).devicePixelRatio,
         body: TextLine(
           node: line,
@@ -127,14 +127,19 @@ class EditableTextBlock extends StatelessWidget {
     }
   }
 
-  double _getIndentWidth() {
+  double _getIndentWidth(LineNode line) {
+    var additionalIndent = 0;
+    final indent = line.style.get(NotusAttribute.indent);
+    if (indent != null) {
+      additionalIndent = indent.value;
+    }
     final block = node.style.get(NotusAttribute.block);
     if (block == NotusAttribute.block.quote) {
-      return 16.0;
+      return 16.0 + additionalIndent;
     } else if (block == NotusAttribute.block.code) {
-      return 32.0;
+      return 32.0 + additionalIndent;
     } else {
-      return 32.0;
+      return 32.0 + additionalIndent;
     }
   }
 

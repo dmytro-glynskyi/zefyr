@@ -77,6 +77,7 @@ abstract class NotusAttributeBuilder<T> implements NotusAttributeKey<T> {
 ///   * [NotusAttribute.color]
 ///   * [NotusAttribute.backgroundColor]
 ///   * [NotusAttribute.heading]
+///   * [NotusAttribute.indent]
 ///   * [NotusAttribute.alignment]
 ///   * [NotusAttribute.block]
 class NotusAttribute<T> implements NotusAttributeBuilder<T> {
@@ -91,6 +92,7 @@ class NotusAttribute<T> implements NotusAttributeBuilder<T> {
     NotusAttribute.color.key: NotusAttribute.color,
     NotusAttribute.backgroundColor.key: NotusAttribute.backgroundColor,
     NotusAttribute.heading.key: NotusAttribute.heading,
+    NotusAttribute.indent.key: NotusAttribute.indent,
     NotusAttribute.alignment.key: NotusAttribute.alignment,
     NotusAttribute.block.key: NotusAttribute.block,
   };
@@ -139,6 +141,9 @@ class NotusAttribute<T> implements NotusAttributeBuilder<T> {
 
   /// Alias for [NotusAttribute.heading.level3].
   static NotusAttribute<int> get h3 => heading.level3;
+
+  /// Indent style attribute.
+  static const indent = IndentAttributeBuilder._();
 
   /// Alignment style attribute.
   // ignore: const_eval_throws_exception
@@ -471,6 +476,20 @@ class HeadingAttributeBuilder extends NotusAttributeBuilder<int> {
 
   /// Level 3 heading, equivalent of `H3` in HTML.
   NotusAttribute<int> get level3 => NotusAttribute<int>._(key, scope, 3);
+}
+
+/// Builder for indent attribute values.
+///
+/// There is no need to use this class directly, consider using
+/// [NotusAttribute.indent] instead.
+class IndentAttributeBuilder extends NotusAttributeBuilder<int> {
+  static const _kIntent = 'indent';
+  const IndentAttributeBuilder._()
+      : super._(_kIntent, NotusAttributeScope.line);
+
+  /// Creates an indent attribute with specified [value].
+  NotusAttribute<int> fromInt(int value) =>
+      NotusAttribute<int>._(key, scope, value);
 }
 
 /// Builder for paragraph alignment attribute styles.

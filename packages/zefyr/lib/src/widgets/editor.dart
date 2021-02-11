@@ -1113,7 +1113,7 @@ class RawEditorState extends EditorState
         result.add(EditableTextLine(
           node: node,
           textDirection: _textDirection,
-          indentWidth: 0,
+          indentWidth: _getIndentWidth(node),
           spacing: _getSpacingForLine(node, _themeData),
           cursorController: _cursorController,
           selection: widget.controller.selection,
@@ -1161,6 +1161,15 @@ class RawEditorState extends EditorState
       return TextAlign.center;
     } else {
       return TextAlign.start;
+    }
+  }
+
+  double _getIndentWidth(LineNode line) {
+    final indent = line.style.get(NotusAttribute.indent);
+    if (indent != null) {
+      return indent.value.toDouble();
+    } else {
+      return 0;
     }
   }
 
