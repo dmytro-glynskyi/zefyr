@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:notus/notus.dart';
 import 'package:zefyr/src/widgets/baseline_proxy.dart';
+import 'package:zefyr/zefyr.dart';
 
 import '../rendering/editor.dart';
 import '../services/keyboard.dart';
@@ -1143,12 +1144,22 @@ class RawEditorState extends EditorState
               ? EdgeInsets.all(16.0)
               : null,
           embedBuilder: widget.embedBuilder,
+          checkboxListener: _toggleCheckbox,
         ));
       } else {
         throw StateError('Unreachable.');
       }
     }
     return result;
+  }
+
+  void _toggleCheckbox(int documentOffset, bool checked) {
+    if (checked) {
+      widget.controller.formatText(documentOffset, 0, NotusAttribute.checked);
+    } else {
+      widget.controller
+          .formatText(documentOffset, 0, NotusAttribute.checked.unset);
+    }
   }
 
   TextAlign _buildParagraphAlignment(LineNode node) {

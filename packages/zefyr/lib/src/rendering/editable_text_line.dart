@@ -165,6 +165,21 @@ class RenderEditableTextLine extends RenderEditableBox {
     }
   }
 
+  @override
+  bool hitTestChildren(BoxHitTestResult result, {@required Offset position}) {
+    if (_leading != null) {
+      final parentData = leading.parentData as BoxParentData;
+      return result.addWithPaintOffset(
+          offset: parentData.offset,
+          position: position,
+          hitTest: (result, position) {
+            return _leading.hitTest(result, position: position);
+          });
+    } else {
+      return true;
+    }
+  }
+
   RenderBox get leading => _leading;
   RenderBox _leading;
   set leading(RenderBox value) {
@@ -606,8 +621,19 @@ class RenderEditableTextLine extends RenderEditableBox {
           maxWidth: indentWidth,
           maxHeight: body.size.height);
       leading.layout(leadingConstraints, parentUsesSize: true);
+
+      final textPosition = TextPosition(
+        offset: 0,
+        affinity: selection.base.affinity,
+      );
+      final leadingRect =
+          Rect.fromLTWH(0, 0, leading.size.width, leading.size.height);
+      final caretOffset = body.getOffsetForCaret(
+        textPosition,
+        leadingRect,
+      );
       final parentData = leading.parentData as BoxParentData;
-      parentData.offset = Offset(0.0, _resolvedPadding.top);
+      parentData.offset = Offset(caretOffset.dx, _resolvedPadding.top);
     }
 
     size = constraints.constrain(Size(
@@ -631,20 +657,7 @@ class RenderEditableTextLine extends RenderEditableBox {
     if (leading != null) {
       final parentData = leading.parentData as BoxParentData;
       final effectiveOffset = offset + parentData.offset;
-
-      final textPosition = TextPosition(
-        offset: 0,
-        affinity: selection.base.affinity,
-      );
-      final leadingRect =
-          Rect.fromLTWH(0, 0, leading.size.width, leading.size.height);
-      final caretOffset = body.getOffsetForCaret(
-            textPosition,
-            leadingRect,
-          ) +
-          effectiveOffset;
-
-      context.paintChild(leading, caretOffset);
+      context.paintChild(leading, effectiveOffset);
     }
 
     if (body != null) {

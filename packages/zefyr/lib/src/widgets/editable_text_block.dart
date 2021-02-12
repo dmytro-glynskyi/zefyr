@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:notus/notus.dart';
 import 'package:zefyr/zefyr.dart';
 
@@ -8,6 +9,8 @@ import 'editable_text_line.dart';
 import 'editor.dart';
 import 'text_line.dart';
 import 'theme.dart';
+
+typedef CheckboxListener = void Function(int documentOffset, bool checked);
 
 class EditableTextBlock extends StatelessWidget {
   final BlockNode node;
@@ -20,6 +23,7 @@ class EditableTextBlock extends StatelessWidget {
   final bool hasFocus;
   final EdgeInsets contentPadding;
   final ZefyrEmbedBuilder embedBuilder;
+  final CheckboxListener checkboxListener;
 
   EditableTextBlock({
     Key key,
@@ -33,6 +37,7 @@ class EditableTextBlock extends StatelessWidget {
     @required this.hasFocus,
     this.contentPadding,
     @required this.embedBuilder,
+    @required this.checkboxListener,
   })  : assert(hasFocus != null),
         assert(embedBuilder != null),
         super(key: key);
@@ -112,6 +117,13 @@ class EditableTextBlock extends StatelessWidget {
         style: theme.paragraph.style.copyWith(fontWeight: FontWeight.bold),
         width: 32,
       );
+    } else if (block == NotusAttribute.block.checkList) {
+      return _CheckboxPoint(
+        style: theme.paragraph.style.copyWith(fontWeight: FontWeight.bold),
+        width: 32,
+        checked: node.style.containsSame(NotusAttribute.checked),
+        onChecked: (value) => checkboxListener(node.documentOffset, value),
+      );
     } else if (block == NotusAttribute.block.code) {
       return _NumberPoint(
         index: index,
@@ -165,7 +177,8 @@ class EditableTextBlock extends StatelessWidget {
       if (block == NotusAttribute.block.quote) {
         lineSpacing = theme.quote.lineSpacing;
       } else if (block == NotusAttribute.block.numberList ||
-          block == NotusAttribute.block.bulletList) {
+          block == NotusAttribute.block.bulletList ||
+          block == NotusAttribute.block.checkList) {
         lineSpacing = theme.lists.lineSpacing;
       } else if (block == NotusAttribute.block.code ||
           block == NotusAttribute.block.code) {
@@ -261,6 +274,7 @@ class _NumberPoint extends StatelessWidget {
     this.withDot = true,
     this.padding = 0.0,
   }) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -281,6 +295,7 @@ class _BulletPoint extends StatelessWidget {
     @required this.style,
     @required this.width,
   }) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -289,5 +304,73 @@ class _BulletPoint extends StatelessWidget {
       width: width,
       padding: EdgeInsetsDirectional.only(end: 13.0),
     );
+  }
+}
+
+class _CheckboxPoint extends StatelessWidget {
+  final TextStyle style;
+  final double width;
+  final bool checked;
+  final ValueChanged<bool> onChecked;
+
+  const _CheckboxPoint({
+    Key key,
+    @required this.style,
+    @required this.width,
+    @required this.checked,
+    @required this.onChecked,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      alignment: AlignmentDirectional.topEnd,
+      child: MouseRegion(
+        cursor: SystemMouseCursors.click,
+        child: Listener(
+          behavior: HitTestBehavior.translucent,
+          onPointerDown: (e) {
+            onChecked(!checked);
+          },
+          child: CustomPaint(
+            painter: _CheckboxPainter(checked),
+            size: Size(18, 18),
+          ),
+        ),
+      ),
+      width: width,
+      padding: EdgeInsetsDirectional.only(end: 13.0, top: 2),
+    );
+  }
+}
+
+class _CheckboxPainter extends CustomPainter {
+  static final _paint = Paint()
+    ..color = Color(0xFF2A3038)
+    ..style = PaintingStyle.stroke
+    ..strokeWidth = 2;
+
+  final bool _checked;
+
+  _CheckboxPainter(this._checked);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final rrect =
+        RRect.fromLTRBR(0, 0, size.width, size.height, Radius.circular(3));
+    canvas.drawRRect(rrect, _paint);
+    if (_checked == true) {
+      final padding = _paint.strokeWidth * 2;
+      final p1 = Offset(padding, size.height * 0.5);
+      final p2 = Offset(size.width * 0.4, size.height - padding);
+      final p3 = Offset(size.width - padding, padding);
+      canvas.drawLine(p1, p2, _paint);
+      canvas.drawLine(p2, p3, _paint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return false;
   }
 }
