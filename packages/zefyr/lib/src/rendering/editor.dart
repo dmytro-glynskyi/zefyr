@@ -228,29 +228,33 @@ class RenderEditor extends RenderEditableContainerBox
     // adjust the dy value by the height of the line. We also add a small margin
     // so that the caret is not too close to the edge of the viewport.
     final endpoints = getEndpointsForSelection(selection);
-    if (endpoints.length == 1) {
-      // Collapsed selection => caret
-      final child = childAtPosition(selection.extent);
-      final childPosition =
-          TextPosition(offset: selection.extentOffset - child.node.offset);
-      final caretTop = endpoints.single.point.dy -
-          child.preferredLineHeight(childPosition) -
-          kMargin +
-          offsetInViewport;
-      final caretBottom =
-          endpoints.single.point.dy + kMargin + offsetInViewport;
-      double dy;
-      if (caretTop < scrollOffset) {
-        dy = caretTop;
-      } else if (caretBottom > scrollOffset + viewportHeight) {
-        dy = caretBottom - viewportHeight;
-      }
-      if (dy == null) return null;
-      // Clamping to 0.0 so that the content does not jump unnecessarily.
-      return math.max(dy, 0.0);
+    final targetEndpoint = endpoints.length == 1
+        ? endpoints.single
+        : selection.affinity == TextAffinity.downstream
+            ? endpoints.first
+            : endpoints.last;
+    // if (endpoints.length == 1) {
+    // Collapsed selection => caret
+    final child = childAtPosition(selection.extent);
+    final childPosition =
+        TextPosition(offset: selection.extentOffset - child.node.offset);
+    final caretTop = targetEndpoint.point.dy -
+        child.preferredLineHeight(childPosition) -
+        kMargin +
+        offsetInViewport;
+    final caretBottom = targetEndpoint.point.dy + kMargin + offsetInViewport;
+    double dy;
+    if (caretTop < scrollOffset) {
+      dy = caretTop;
+    } else if (caretBottom > scrollOffset + viewportHeight) {
+      dy = caretBottom - viewportHeight;
     }
+    if (dy == null) return null;
+    // Clamping to 0.0 so that the content does not jump unnecessarily.
+    return math.max(dy, 0.0);
+    // }
     // TODO: Implement for non-collapsed selection.
-    return null;
+    // return null;
   }
 
   @override
