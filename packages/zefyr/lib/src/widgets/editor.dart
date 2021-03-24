@@ -7,6 +7,8 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:notus/notus.dart';
+import 'package:zefyr/src/services/clipboard_controller.dart';
+import 'package:zefyr/src/services/simple_clipboard_controller.dart';
 import 'package:zefyr/src/widgets/baseline_proxy.dart';
 import 'package:zefyr/zefyr.dart';
 
@@ -59,6 +61,11 @@ class ZefyrEditor extends StatefulWidget {
   /// Can be `null` in which case this editor creates its own instance to
   /// control keyboard focus.
   final FocusNode focusNode;
+
+  /// The [ClipboardController] to use when interacting with the clipboard.
+  ///
+  /// If `null` then this editor instantiates a SimpleClipboardController.
+  final ClipboardController clipboardController;
 
   /// The [ScrollController] to use when vertically scrolling the contents.
   ///
@@ -181,6 +188,7 @@ class ZefyrEditor extends StatefulWidget {
     Key key,
     @required this.controller,
     this.focusNode,
+    this.clipboardController,
     this.scrollController,
     this.scrollable = true,
     this.padding = EdgeInsets.zero,
@@ -284,6 +292,7 @@ class _ZefyrEditorState extends State<ZefyrEditor>
       controller: widget.controller,
       focusNode: widget.focusNode,
       scrollController: widget.scrollController,
+      clipboardController: widget.clipboardController,
       scrollable: widget.scrollable,
       padding: widget.padding,
       autofocus: widget.autofocus,
@@ -453,6 +462,7 @@ class RawEditor extends StatefulWidget {
     Key key,
     @required this.controller,
     @required this.focusNode,
+    this.clipboardController,
     this.scrollController,
     this.scrollable = true,
     this.padding = EdgeInsets.zero,
@@ -506,6 +516,10 @@ class RawEditor extends StatefulWidget {
   /// Controls whether this editor has keyboard focus.
   final FocusNode focusNode;
 
+  /// Controls whether this editor interacts with clipboard.
+  final ClipboardController clipboardController;
+
+  /// Controls whether this editor is scrolling vertically.
   final ScrollController scrollController;
 
   final bool scrollable;
@@ -802,6 +816,8 @@ class RawEditorState extends EditorState
       onShortcut: handleShortcut,
       onDelete: handleDelete,
     );
+    clipboardController =
+        widget.clipboardController ?? SimpleClipboardController();
 
     // Focus
     _focusAttachment = widget.focusNode.attach(context,

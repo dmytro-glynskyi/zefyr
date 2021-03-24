@@ -7,6 +7,7 @@ import 'package:characters/characters.dart';
 import 'package:flutter/services.dart';
 import 'package:meta/meta.dart';
 import 'package:notus/notus.dart';
+import 'package:zefyr/src/services/clipboard_controller.dart';
 
 import '../services/keyboard.dart';
 import 'editor.dart';
@@ -132,6 +133,8 @@ mixin RawEditorStateKeyboardMixin on EditorState {
   // it if they change their minds. Only used for resetting selection up and
   // down in a multiline text field when selecting using the keyboard.
   bool _wasSelectingVerticallyWithKeyboard = false;
+
+  ClipboardController clipboardController;
 
   void handleCursorMovement(
     LogicalKeyboardKey key, {
@@ -323,57 +326,30 @@ mixin RawEditorStateKeyboardMixin on EditorState {
   // using control/command + (X, C, V, A).
   // TODO: Add support for formatting shortcuts: Cmd+B (bold), Cmd+I (italic)
   Future<void> handleShortcut(InputShortcut shortcut) async {
-    final selection = widget.controller.selection;
+    // final selection = widget.controller.selection;
     final plainText = textEditingValue.text;
-    assert(selection != null);
+    // assert(selection != null);
     if (shortcut == InputShortcut.copy) {
-      if (!selection.isCollapsed) {
-        // ignore: unawaited_futures
-        Clipboard.setData(ClipboardData(text: selection.textInside(plainText)));
-      }
+      clipboardController.copy(widget.controller, plainText);
       return;
     }
     if (shortcut == InputShortcut.cut && !widget.readOnly) {
-      if (!selection.isCollapsed) {
-        final data = selection.textInside(plainText);
-        // ignore: unawaited_futures
-        Clipboard.setData(ClipboardData(text: data));
-
-        widget.controller.replaceText(
-          selection.start,
-          data.length,
-          '',
-          selection: TextSelection.collapsed(offset: selection.start),
-        );
-
-        textEditingValue = TextEditingValue(
-          text:
-              selection.textBefore(plainText) + selection.textAfter(plainText),
-          selection: TextSelection.collapsed(offset: selection.start),
-        );
+      final updatedEditingValue =
+          clipboardController.cut(widget.controller, plainText);
+      if (updatedEditingValue != null) {
+        textEditingValue = updatedEditingValue;
       }
       return;
     }
     if (shortcut == InputShortcut.paste && !widget.readOnly) {
       // Snapshot the input before using `await`.
       // See https://github.com/flutter/flutter/issues/11427
-      final TextEditingValue value = textEditingValue;
-      final ClipboardData data = await Clipboard.getData(Clipboard.kTextPlain);
-      if (data != null) {
-        final length = selection.end - selection.start;
-        widget.controller.replaceText(
-          selection.start,
-          length,
-          data.text,
-          selection: TextSelection.collapsed(
-              offset: selection.start + data.text.length),
-        );
-      }
+      clipboardController.paste(widget.controller, textEditingValue);
       return;
     }
     if (shortcut == InputShortcut.selectAll &&
         widget.enableInteractiveSelection) {
-      final newSelection = selection.copyWith(
+      final newSelection = widget.controller.selection.copyWith(
         baseOffset: 0,
         extentOffset: textEditingValue.text.length,
       );
