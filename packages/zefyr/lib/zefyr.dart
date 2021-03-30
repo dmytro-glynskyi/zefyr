@@ -11,6 +11,7 @@ export 'package:notus/notus.dart';
 
 export 'src/rendering/editor.dart';
 export 'src/services/clipboard_controller.dart';
+export 'src/services/simple_clipboard_controller.dart';
 export 'src/widgets/controller.dart';
 export 'src/widgets/cursor.dart';
 export 'src/widgets/editor.dart';
