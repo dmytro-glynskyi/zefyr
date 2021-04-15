@@ -138,6 +138,12 @@ class ZefyrEditor extends StatefulWidget {
   /// set to `false`.
   final double maxHeight;
 
+  /// The minimum height to be available for scroll in the editor.
+  ///
+  /// This only is useful for cases when it needs to have bigger
+  /// scroll area then needed for current text.
+  final double scrollAreaMinHeight;
+
   /// Whether this editor's height will be sized to fill its parent.
   ///
   /// This only has effect if [scrollable] is set to `true`.
@@ -198,6 +204,7 @@ class ZefyrEditor extends StatefulWidget {
     this.enableInteractiveSelection = true,
     this.minHeight,
     this.maxHeight,
+    this.scrollAreaMinHeight,
     this.expands = false,
     this.textCapitalization = TextCapitalization.sentences,
     this.keyboardAppearance = Brightness.light,
@@ -301,6 +308,7 @@ class _ZefyrEditorState extends State<ZefyrEditor>
       enableInteractiveSelection: widget.enableInteractiveSelection,
       minHeight: widget.minHeight,
       maxHeight: widget.maxHeight,
+      scrollAreaMinHeight: widget.scrollAreaMinHeight,
       expands: widget.expands,
       textCapitalization: widget.textCapitalization,
       keyboardAppearance: widget.keyboardAppearance,
@@ -472,6 +480,7 @@ class RawEditor extends StatefulWidget {
     this.enableInteractiveSelection = true,
     this.minHeight,
     this.maxHeight,
+    this.scrollAreaMinHeight,
     this.expands = false,
     this.textCapitalization = TextCapitalization.none,
     this.keyboardAppearance = Brightness.light,
@@ -497,6 +506,7 @@ class RawEditor extends StatefulWidget {
         assert(readOnly != null),
         assert(maxHeight == null || maxHeight > 0),
         assert(minHeight == null || minHeight >= 0),
+        assert(scrollAreaMinHeight == null || scrollAreaMinHeight >= 0),
         assert(
           (maxHeight == null) ||
               (minHeight == null) ||
@@ -592,6 +602,9 @@ class RawEditor extends StatefulWidget {
   /// The minimum height this editor can have.
   final double minHeight;
 
+  /// The minimum height this editor can scroll.
+  final double scrollAreaMinHeight;
+
   /// Whether this widget's height will be sized to fill its parent.
   ///
   /// If set to true and wrapped in a parent widget like [Expanded] or
@@ -661,6 +674,8 @@ class RawEditor extends StatefulWidget {
     properties.add(DiagnosticsProperty<FocusNode>('focusNode', focusNode));
     properties.add(DoubleProperty('maxLines', maxHeight, defaultValue: null));
     properties.add(DoubleProperty('minLines', minHeight, defaultValue: null));
+    properties.add(DoubleProperty('scrollAreaMinHeight', scrollAreaMinHeight,
+        defaultValue: null));
     properties.add(
         DiagnosticsProperty<bool>('autofocus', autofocus, defaultValue: false));
     properties.add(DiagnosticsProperty<ScrollPhysics>(
@@ -1100,7 +1115,12 @@ class RawEditorState extends EditorState
         child: SingleChildScrollView(
           controller: _scrollController,
           physics: widget.scrollPhysics,
-          child: child,
+          child: Stack(
+            children: [
+              SizedBox(height: widget.scrollAreaMinHeight),
+              child,
+            ],
+          ),
         ),
       );
     }
